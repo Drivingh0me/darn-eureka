@@ -19,24 +19,24 @@ int main(int argc, char **argv)
 
     /* Gameinfo loads the basic gameplay and assets and makes a handle
      * for save if lethal failure */
-    GameInfo Info;
+    GameInfo info;
 
-    status = app_startup(&Info, message);
+    status = app_startup(&info, message);
     if (status) {
         app_err(status, message);
         free(message);
-        app_shutdown(&Info);
+        app_shutdown(&info);
     }
 
-    status = run_app(argc, argv, &Info, message);
+    status = run_app(argc, argv, &info, message);
     if (status) {
         app_err(status, message);
         free(message);
-        app_shutdown(&Info);
+        app_shutdown(&info);
     }
 
     free(message);
-    app_shutdown(&Info);
+    app_shutdown(&info);
 
     return 0;
 }

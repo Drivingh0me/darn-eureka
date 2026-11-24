@@ -10,86 +10,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Instead of data as the type here, just have the app's state here and
- * pass that between function calls. Can also remove the func array and
- * instead have the gui or interpreter call the tools.
-*/
-
-typedef struct {
-    int length;
-    int lines;
-    double *data;
-} Data;
-
-typedef struct {
-    int sets;
-    Data *data_arr;
-} Dataset;
-
 #define ARG_MAX 64
-#define VERSION "subchemica v0.1.1 (pre-alpha)\n"
+#define VERSION "Darn Eureka v0.1.1 (pre-alpha)\n"
 
-/* TODO: Add passing a normal string to the app from pipe */
-
-/* argsparse
- * The flags array is an int of each flag given in order.
- * The args array is the start then end index of argv given to each flag
- * in same order as flags.
- * 0 is last flag.
- * EX:
- * flags[0] is open file.
- * args[0] is first argv index passed (-1 if none)
- * and args[1] is index of last arg given to open file.
- * flags:
- * -d/--debug 1
- * -f/--file 2 (takes args)
- * -t/--tui 3
- * -i/--interpreter 4
-*/
 typedef struct {
     int flag[ARG_MAX];
     int arg[2 * ARG_MAX];
 } ArgParse;
-
-static void cleanup()
-{
-    // printf("Cleaning up.\n");
-}
-
-void print_response(char *str)
-{
-    printf(GREEN "> " RESET "%s", str);
-}
-
-/* NULL terminates the str, \t seperates args */
-int tool_echo(char *str)
-{
-    print_response(str);
-    return 0;
-}
-
-int tool_add(char *str)
-{
-    printf("I say: %s\n", str);
-    return 0;
-}
-
-int get_short_flag(char c)
-{
-    switch (c) {
-        case 'd':
-            return 1;
-        case 'f':
-            return 2;
-        case 't':
-            /* Change this to gui instead of tui */
-            return 3;
-        case 'i':
-            return 4;
-        default:
-            return INVALID_ARG;
-    }
-}
 
 int get_long_flag(char *c)
 {
@@ -202,7 +129,7 @@ Cleanup:
 }
 
 /* Not implemented */
-int app_startup(SystemInfo *sysInfo)
+int app_startup(GameInfo *info, char* message)
 {
     /* Check system info.
      * Cleanup here with sysinfo if error
@@ -218,7 +145,7 @@ int app_startup(SystemInfo *sysInfo)
     return 0;
 }
 
-int run_app(int argc, char **argv, SystemInfo *sysInfo)
+int run_app(int argc, char **argv, GameInfo *info, char* message)
 {
     ArgParse args;
 
