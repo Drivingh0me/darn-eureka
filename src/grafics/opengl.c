@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-// Importd from the std library.
+// Imported from the std library.
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
