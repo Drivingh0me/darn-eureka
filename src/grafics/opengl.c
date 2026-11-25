@@ -92,7 +92,7 @@ float texCoords[] = {
   0.5f, 1.0f
 };
 
-int main(UNUSED int argc, UNUSED char **argv)
+int run_window()
 {
 
   GLFWwindow* window = init();

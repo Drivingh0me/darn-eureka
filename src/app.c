@@ -2,6 +2,7 @@
 
 #include "export.h"
 #include "error.h"
+#include "game/game.h"
 #include <target.h>
 
 #include <stdio.h>
@@ -21,7 +22,7 @@ typedef struct {
     int arg[2 * ARG_MAX];
 } ArgParse;
 
-int same_str(char* sample, char *key)
+static int same_str(char* sample, char *key)
 {
     int i = 0;
     while (key[i] != '\0') {
@@ -36,7 +37,7 @@ int same_str(char* sample, char *key)
     return 1;
 }
 
-int get_short_flag(char c)
+static int get_short_flag(char c)
 {
     switch (c) {
         case 't':
@@ -50,14 +51,14 @@ int get_short_flag(char c)
     }
 }
 
-int get_long_flag(char *c)
+static int get_long_flag(char *c)
 {
     if (same_str(c, "--silent")) {
         return 9;
     }
 }
 
-static void parse_args(int argc, char **argv, ArgParse *args)
+static int parse_args(int argc, char **argv, ArgParse *args)
 {
     int i;
     int x = 0;
@@ -66,7 +67,7 @@ static void parse_args(int argc, char **argv, ArgParse *args)
         /* If no args, run interpreter */
         args->flag[0] = 4;
         args->flag[1] = 0;
-        return;
+        return 0;
     }
 
     /* Check for --version and --help explicitely */
@@ -74,13 +75,13 @@ static void parse_args(int argc, char **argv, ArgParse *args)
         if (same_str(argv[1], "--version")) {
             printf(VERSION);
             args->flag[0] = 0;
-            return;
+            return 1;
         }
 
         if (same_str(argv[1], "--help")) {
             printf("Help not implemented\n");
             args->flag[0] = 0;
-            return;
+            return 1;
         }
     }
 
@@ -113,9 +114,11 @@ static void parse_args(int argc, char **argv, ArgParse *args)
     if (x > 0) {
         args->arg[2 * x - 1] = i - 1;
     }
+
+    return 0;
 }
 
-int set_game_info(ArgParse args, char **argv)
+static void set_game_info(ArgParse args, char **argv, GameInfo* info)
 {
     int i = 0;
     int status = 0;
@@ -124,7 +127,7 @@ int set_game_info(ArgParse args, char **argv)
         /* must match args */
         switch (args.flag[i]) {
             case 0:
-                run_game();
+                break;
             case 1:
                 /* Test */
                 break;
@@ -135,11 +138,10 @@ int set_game_info(ArgParse args, char **argv)
                 /* silent */
                 break;
             default:
-                return INVALID_VAL;
+                break;
         }
         i++;
     }
-    return status;
 }
 
 /* Not implemented */
@@ -150,22 +152,26 @@ int app_startup(GameInfo *info, char* message)
 
     status = TARG_mem_limit(&mem);
 
+    /* Load game  materials into info */
+
+    /* Setup assets in info */
+
+
     return 0;
 }
 
 int run_app(int argc, char **argv, GameInfo* info, char* message)
 {
-    int status = 0;
+    int status;
     ArgParse args;
 
-    /* Use this to set debug mode, and test state for info */
-    if (argc > 1) {
-        status = parse_args(argc, argv, &args);
-        if (status) {
-            return status;
-        }
-        return set_game_info(args, argv, info);
+    status = parse_args(argc, argv, &args);
+    /* Return early if --version, --help, or invalid arg */
+    if (status) {
+        return 0;
     }
+
+    set_game_info(args, argv, info);
 
     return run_game(info, message);
 }
