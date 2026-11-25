@@ -1,14 +1,17 @@
 #include "error.h"
 
-#include "interpreter.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 
+#define RESET "\033[0m"
+#define REDBOLD "\033[1;31m"
+
 /* Add print to std err to catch specific fault */
-void print_err(Error err)
+void print_err(Error err, char* message)
 {
     switch (err) {
+        case MSG:
+        printf(message);
         case MEM_ALLOC:
         printf("Memory allocation failed\n");
         break;
@@ -27,16 +30,16 @@ void print_err(Error err)
     }
 }
 
-void app_err(Error err)
+void app_err(Error err, char* message)
 {
     if (err < 0) {
         /* Uses ANSI escape sequence to color error message. */
         printf(REDBOLD "FATAL ERROR: %d" RESET "\n", err);
-        print_err(err);
+        print_err(err, message);
     } else {
         printf(REDBOLD "RECOVERABLE ERROR: %d BECAME FATAL.\n" RESET
                "This is likely a bug.\n", err);
-        print_err(err);
+        print_err(err, message);
     }
 }
 

@@ -1,34 +1,38 @@
-CC = gcc
-
-TARGET = subchemica
+TARGET = darneureka
 
 SRC_DIR := src
 BUILD_DIR = build
-# BIN_DIR = bin
+BIN_DIR = bin
 INCLUDE_DIR = include
 
 # This selects the paltform
 ifeq ($(shell uname -s),Darwin)
 	PLATFORM := Darwin
+	CC := clang
+
+	GLFW_INCLUDE_DIR := /opt/homebrew/opt/glfw/include
+	GLFW_LIB_DIR := /opt/homebrew/opt/glfw/lib
+
+	CFLAGS = -O2 -Wall -Wextra -I$(INCLUDE_DIR) -I$(GLFW_INCLUDE_DIR)
+
+	LDFLAGS = -L$(GLFW_LIB_DIR) -lglfw -ldl -framework OpenGL -framework Cocoa -framework Foundation
 endif
 
 ifeq ($(shell uname -s),Linux)
 	PLATFORM := Linux
+	CC := gcc
+
+	CFLAGS = -O2 -Wall -Wextra -I$(INCLUDE_DIR)
+	LDFLAGS = -lglfw -ldl -lGL -lm
 endif
 
 PLATFORM_DIR = platform/$(PLATFORM)
 
 SRCS := $(wildcard $(SRC_DIR)/*.c)
 PLAT_SRC := $(wildcard $(PLATFORM_DIR)/*.c)
-# $(info $$SRCS is [${SRCS}])
 
-# OBJS = $(SRCS:.c=.o)
 OBJS := $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
 PLAT_OBJ := $(patsubst $(PLATFORM_DIR)/%.c, $(BUILD_DIR)/%.o, $(PLAT_SRC))
-
-CFLAGS = -O2 -Wall -Wextra -I$(INCLUDE_DIR)
-CT_FLAGS = -Wall -Wextra
-LDFLAGS =
 
 all: $(TARGET)
 
@@ -50,12 +54,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(BUILD_DIR)
 	$(CC) -c $< $(CFLAGS) -o $@
 
-# debug: CFLAGS = -Wall -Wextra -I$(INCLUDE_DIR) -g -O0
-# debug: clean $(TARGET)
-
 clean:
 	rm -rf $(BUILD_DIR)
-	# rm $(BUILD_DIR)/*.o
 
-# .PHONY: all clean debug
 .PHONY: all clean

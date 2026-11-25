@@ -9,13 +9,14 @@ int main(int argc, char **argv)
 
     /* This is a message string that can be accessed by the whole game to
      * to capture errors */
-    char* message = malloc(256 * sizeof(char));
+    char* message = malloc(ERR_MSG_LEN_MAX + 1 * sizeof(char));
 
     if (message == NULL) {
         return -1;
     }
 
-    str[0] = '\0';
+    message[0] = '\0';
+    message[ERR_MSG_LEN_MAX] = '\0';
 
     /* Gameinfo loads the basic gameplay and assets and makes a handle
      * for save if lethal failure */
