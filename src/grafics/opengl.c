@@ -1,5 +1,3 @@
-#define UNUSED __attribute__((unused))
-
 // OpenGL related includes.
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -21,7 +19,7 @@
 // FUNCTIONS
 // GLFW initialization func.
 static void framebuffer_size_callback(
-  UNUSED GLFWwindow* window, int width, int height)
+  GLFWwindow* window, int width, int height)
 {
   glViewport(0, 0, width, height);
 }

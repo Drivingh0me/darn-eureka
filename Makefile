@@ -13,7 +13,7 @@ ifeq ($(shell uname -s),Darwin)
 	GLFW_INCLUDE_DIR := /opt/homebrew/opt/glfw/include
 	GLFW_LIB_DIR := /opt/homebrew/opt/glfw/lib
 
-	CFLAGS := -O2 -Wall -Wextra -MMD -MP -I$(INCLUDE_DIR) -I$(GLFW_INCLUDE_DIR)
+	CFLAGS := -O2 -Wall -Wextra -MMD -MP -I$(INCLUDE_DIR) -I$(SRC_DIR) -I$(GLFW_INCLUDE_DIR)
 	LDFLAGS := -L$(GLFW_LIB_DIR) -lglfw -ldl -framework OpenGL -framework Cocoa -framework Foundation
 endif
 
@@ -21,7 +21,7 @@ ifeq ($(shell uname -s),Linux)
 	PLATFORM := Linux
 	CC := gcc
 
-	CFLAGS := -O2 -Wall -Wextra -MMD -MP -I$(INCLUDE_DIR)
+	CFLAGS := -O2 -Wall -Wextra -MMD -MP -I$(INCLUDE_DIR) -I$(SRC_DIR)
 	LDFLAGS := -lglfw -ldl -lGL -lm
 endif
 
